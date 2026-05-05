@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regálame Jauja — Floristería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --rose: #c4543a;
+      --rose-dark: #a83e28;
+      --ink: #1a1a1a;
+      --muted: #666;
+      --light: #faf8f5;
+      --white: #fff;
+      --border: rgba(0,0,0,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--light);
+      color: var(--ink);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      background: rgba(250,248,245,0.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 300;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      color: var(--ink);
+      cursor: pointer;
+      user-select: none;
+    }
+    .logo span { color: var(--rose); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #666;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--rose); }
+    .nav-cta {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: var(--white);
+      border: none;
+      padding: 0.55rem 1.4rem;
+      cursor: pointer;
+      border-radius: 2rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--rose); }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: all .3s;
+    }
+    .mobile-menu {
+      display: none;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1.5rem 1rem;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a {
+      display: block;
+      padding: 0.8rem 0;
+      font-size: 0.92rem;
+      color: #444;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+
+    /* ══════════════════════════════
+       SCREENS
+    ══════════════════════════════ */
+    .screen { display: none; }
+    .screen.active {
+      display: block;
+      animation: fadeUp .35s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════
+       SCREEN 1 — HERO
+    ══════════════════════════════ */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 88vh;
+      align-items: center;
+    }
+    .hero-left { padding: 4rem 3rem; }
+    .hero-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1rem;
+    }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.8rem;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    .hero-title em { font-style: italic; color: var(--rose); }
+    .hero-sub {
+      font-size: 0.93rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 370px;
+      margin-bottom: 2.2rem;
+    }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--rose);
+      color: var(--white);
+      border: none;
+      padding: 0.85rem 1.8rem;
+      border-radius: 3rem;
+      font-size: 0.88rem;
+      letter-spacing: 0.07em;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .25s;
+    }
+    .hero-btn:hover { background: var(--rose-dark); transform: translateY(-2px); }
+    .hero-btn svg { width: 15px; height: 15px; }
+
+    .hero-right {
+      background: var(--ink);
+      height: 88vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .big-circle {
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 12px rgba(255,255,255,0.06), 0 0 0 24px rgba(255,255,255,0.03);
+      flex-shrink: 0;
+    }
+    .float-tag {
+      position: absolute;
+      background: var(--white);
+      border-radius: 3rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.76rem;
+      font-weight: 500;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,.18);
+    }
+    .ft1 { top: 5%;    left: 50%; transform: translateX(-50%); animation: fl1 4s ease-in-out infinite; }
+    .ft2 { top: 30%;   right: 3%; animation: fl2 5s ease-in-out infinite; }
+    .ft3 { bottom: 15%; right: 8%; animation: fl1 6s ease-in-out infinite; }
+    .ft6 { bottom: 15%; left: 8%;  animation: fl2 6s ease-in-out infinite; }
+    .ft9 { top: 30%;   left: 3%;  animation: fl1 7s ease-in-out infinite; }
+    @keyframes fl1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes fl2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY( 9px)} }
+    @keyframes fl1c { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
+
+    /* Categories */
+    .cats-section { padding: 3.5rem 3rem 5rem; background: var(--white); }
+    .sec-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+    }
+    .sec-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.1rem;
+      margin-bottom: 2.2rem;
+    }
+    .cats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; }
+    .cat-card {
+      border-radius: 1.2rem;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      aspect-ratio: 3/4;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .cat-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,.15); }
+    .cat-bg {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative;
+    }
+    .cat-grad { position: absolute; inset: 0; }
+    .cat-emoji { font-size: 4rem; position: relative; z-index: 2; }
+    .cat-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.3rem 1.1rem;
+      background: linear-gradient(transparent, rgba(0,0,0,.68));
+      color: var(--white); z-index: 3;
+    }
+    .cat-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.25rem; }
+    .cat-count { font-size: 0.72rem; opacity: 0.75; }
+    .cat-arrow {
+      position: absolute; top: 0.85rem; right: 0.85rem;
+      width: 30px; height: 30px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; z-index: 3;
+    }
+
+    /* ══════════════════════════════
+       SCREEN 2 — MODELOS
+    ══════════════════════════════ */
+    .page-header {
+      padding: 2.2rem 3rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.78rem; color: #aaa; margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .breadcrumb button {
+      background: none; border: none; cursor: pointer;
+      color: #aaa; font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; padding: 0; transition: color .2s;
+    }
+    .breadcrumb button:hover { color: var(--rose); }
+    .breadcrumb span { opacity: 0.45; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; }
+    .page-sub { font-size: 0.85rem; color: #888; margin-top: 0.4rem; }
+
+    .models-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1.4rem;
+      padding: 2rem 3rem 5rem;
+    }
+    .model-card {
+      background: var(--white);
+      border-radius: 1.2rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all .3s;
+      border: 1.5px solid transparent;
+      position: relative;
+    }
+    .model-card:hover {
+      border-color: var(--rose);
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(196,84,58,.13);
+    }
+    .model-thumb {
+      height: 210px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .model-thumb-bg { position: absolute; inset: 0; }
+    .model-emoji { font-size: 4.5rem; position: relative; z-index: 2; }
+    .model-body { padding: 1.1rem 1.1rem 1.3rem; }
+    .model-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .model-desc { font-size: 0.78rem; color: #888; line-height: 1.55; margin-bottom: 0.9rem; }
+    .dots-row { display: flex; gap: 5px; align-items: center; }
+    .cdot { width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.1); }
+    .cmore { font-size: 0.72rem; color: #bbb; margin-left: 3px; }
+    .model-badge {
+      position: absolute; top: 0.7rem; left: 0.7rem;
+      background: var(--rose); color: var(--white);
+      font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.28rem 0.65rem; border-radius: 2rem; z-index: 3;
+    }
+
+    /* ══════════════════════════════
+       SCREEN 3 — DETALLE COLORES
+    ══════════════════════════════ */
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      min-height: 88vh;
+    }
+    .detail-showcase {
+      background: var(--ink);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden; padding: 3rem;
+    }
+    .detail-bg-circle {
+      position: absolute;
+      width: 340px; height: 340px;
+      border-radius: 50%; opacity: 0.22;
+      transition: background .45s;
+    }
+    .detail-flower {
+      font-size: 9.5rem;
+      position: relative; z-index: 2;
+      transition: transform .3s;
+    }
+    .detail-clabel {
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-style: italic;
+      margin-top: 1.5rem;
+      position: relative; z-index: 2; opacity: 0.85;
+    }
+    .detail-right { padding: 2.5rem; overflow-y: auto; background: var(--light); }
+    .detail-title { font-family: 'Playfair Display', serif; font-size: 2.3rem; margin-bottom: 0.4rem; }
+    .detail-desc { font-size: 0.88rem; color: #888; line-height: 1.65; margin-bottom: 1.8rem; }
+    .colors-label {
+      font-size: 0.68rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #bbb; margin-bottom: 0.9rem;
+    }
+    .colors-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.75rem; margin-bottom: 2rem; }
+    .color-card {
+      border-radius: 0.9rem; overflow: hidden;
+      cursor: pointer; border: 2px solid transparent; transition: all .22s;
+    }
+    .color-card:hover { transform: scale(1.02); }
+    .color-card.selected { border-color: var(--ink); }
+    .color-swatch {
+      height: 82px; display: flex;
+      align-items: center; justify-content: center; font-size: 2rem;
+    }
+    .color-info { background: var(--white); padding: 0.6rem 0.75rem; border-top: 1px solid rgba(0,0,0,.06); }
+    .color-name { font-size: 0.82rem; font-weight: 500; color: var(--ink); }
+    .color-hex { font-size: 0.7rem; color: #aaa; margin-top: 2px; }
+    .btn-p {
+      background: var(--rose); color: var(--white); border: none;
+      padding: 0.88rem 1.5rem; border-radius: 3rem; font-size: 0.87rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: background .2s; width: 100%; margin-bottom: 0.65rem;
+    }
+    .btn-p:hover { background: var(--rose-dark); }
+    .btn-s {
+      background: var(--white); color: var(--ink);
+      border: 1.5px solid rgba(0,0,0,.15);
+      padding: 0.88rem 1.5rem; border-radius: 3rem; font-size: 0.87rem;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all .2s; width: 100%;
+    }
+    .btn-s:hover { border-color: var(--ink); }
+
+    /* ══════════════════════════════
+       RESPONSIVE — TABLET
+    ══════════════════════════════ */
+    @media (max-width: 1024px) and (min-width: 701px) {
+      .hero-title { font-size: 2.8rem; }
+      .big-circle { width: 300px; height: 300px; }
+      .models-grid { grid-template-columns: repeat(2,1fr); padding: 1.5rem 2rem 4rem; }
+      .page-header { padding: 1.8rem 2rem 1.2rem; }
+    }
+
+    /* ══════════════════════════════
+       RESPONSIVE — MOBILE
+    ══════════════════════════════ */
+    @media (max-width: 700px) {
+      /* NAV */
+      nav { padding: 0.9rem 1.2rem; }
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .logo { font-size: 1.1rem; }
+
+      /* HERO — imagen visible y grande */
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right {
+        height: 340px;
+        order: -1;
+        border-radius: 0 0 2.5rem 2.5rem;
+      }
+      .big-circle {
+        width: 250px;
+        height: 250px;
+        /* Asegurar que la imagen cargue correctamente */
+        background: #1a1a1a;
+      }
+      .big-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
+        /* Fallback color en caso de error de carga */
+        background: #2a2a2a;
+      }
+
+      /* Float tags — reposicionados sin conflictos de transform */
+      .float-tag {
+        font-size: 0.64rem;
+        padding: 0.32rem 0.78rem;
+      }
+      /* Top center: usa animación fl1c que mantiene el centrado */
+      .ft1 {
+        top: 7%; bottom: auto;
+        left: 50%; right: auto;
+        transform: translateX(-50%);
+        animation: fl1c 4s ease-in-out infinite;
+      }
+      /* Derecha media: Delivery Jauja */
+      .ft2 {
+        top: 38%; bottom: auto;
+        right: 5%; left: auto;
+        transform: none;
+        animation: fl2 5s ease-in-out infinite;
+      }
+      /* Izquierda media: Incluye tarjeta */
+      .ft9 {
+        top: 38%; bottom: auto;
+        left: 5%; right: auto;
+        transform: none;
+        animation: fl1 7s ease-in-out infinite;
+      }
+      /* Abajo izquierda: Material Premium */
+      .ft6 {
+        bottom: 9%; top: auto;
+        left: 7%; right: auto;
+        transform: none;
+        animation: fl2 6s ease-in-out infinite;
+      }
+      /* Abajo derecha: Personalizados — antes oculto, ahora visible */
+      .ft3 {
+        bottom: 9%; top: auto;
+        right: 7%; left: auto;
+        transform: none;
+        display: block;
+        animation: fl1 6s ease-in-out infinite;
+      }
+
+      /* Hero texto */
+      .hero-left { padding: 1.8rem 1.4rem 2.8rem; }
+      .hero-title { font-size: 2.2rem; }
+      .hero-sub { font-size: 0.85rem; max-width: 100%; }
+
+      /* CATEGORIES */
+      .cats-section { padding: 2rem 1.2rem 3rem; }
+      .sec-title { font-size: 1.55rem; }
+      .cats-grid { grid-template-columns: 1fr; gap: 0.85rem; }
+      .cat-card { aspect-ratio: 5/2; }
+      .cat-emoji { font-size: 2.6rem; }
+      .cat-name { font-size: 1rem; }
+
+      /* MODELOS — 2 columnas en mobile, más usable */
+      .page-header { padding: 1.4rem 1.2rem 1rem; }
+      .page-title { font-size: 1.85rem; }
+      .models-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+        padding: 1.1rem 1rem 3.5rem;
+      }
+      .model-thumb { height: 140px; }
+      .model-emoji { font-size: 3rem; }
+      .model-body { padding: 0.8rem 0.8rem 1rem; }
+      .model-name { font-size: 0.95rem; }
+      .model-desc { font-size: 0.72rem; margin-bottom: 0.6rem; }
+
+      /* DETALLE — pantalla completa por secciones */
+      .detail-layout { grid-template-columns: 1fr; min-height: auto; }
+      .detail-showcase { height: 240px; padding: 1.5rem; }
+      .detail-bg-circle { width: 180px; height: 180px; }
+      .detail-flower { font-size: 5.5rem; }
+      .detail-clabel { font-size: 0.85rem; margin-top: 0.8rem; }
+      .detail-right { padding: 1.5rem 1.2rem 3rem; }
+      .detail-title { font-size: 1.75rem; }
+      .colors-grid { gap: 0.6rem; }
+      .color-swatch { height: 65px; font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showScreen('s1')">Regálame <span>Jauja</span></div>
+  <ul class="nav-links">
+    <li><a onclick="showScreen('s1')">Inicio</a></li>
+    <li><a onclick="initCatalog(); showScreen('s2')">Catálogo</a></li>
+    <li><a>Sobre nosotros</a></li>
+  </ul>
+  <button class="nav-cta" onclick="initCatalog(); showScreen('s2')">Ver catálogo</button>
+  <button class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mmenu">
+  <a onclick="closeMenu(); showScreen('s1')">🏠 Inicio</a>
+  <a onclick="closeMenu(); initCatalog(); showScreen('s2')">🌸 Catálogo</a>
+  <a onclick="closeMenu()">💌 Sobre nosotros</a>
+</div>
+
+<!-- ══ SCREEN 1: HOME ══ -->
+<div id="s1" class="screen active">
+
+  <div class="hero">
+    <div class="hero-left">
+      <p class="hero-tag">✦ Floristería artesanal en Jauja</p>
+      <h1 class="hero-title">Flores que <em>hablan</em><br>por ti</h1>
+      <p class="hero-sub">Ramos únicos, creados con amor y frescura , para mantener los recuerdos del amor de una madre eternamente. Desde rosas clásicas hasta mezclas silvestres que sorprenden.</p>
+      <button class="hero-btn" onclick="initCatalog(); showScreen('s2')">
+        Explorar catálogo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+    <div class="hero-right">
+      <div class="big-circle">
+        <img src="https://res.cloudinary.com/dultujuyj/image/upload/v1777833513/Gemini_Generated_Image_soia79soia79soia_olhs7a.png" alt="flores" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+      </div>
+    <div class="float-tag ft1">🌷 +50 variedades</div>
+    <div class="float-tag ft2">✦ Delivery Jauja</div>
+    <div class="float-tag ft3">🎁 Personalizados</div>
+    <div class="float-tag ft6">Material Premium</div>
+    <div class="float-tag ft9">💌 Incluye tarjeta</div>
+    </div>
+  </div>
+
+  <div class="cats-section">
+    <p class="sec-label">Categorías</p>
+    <h2 class="sec-title">Nuestros arreglos</h2>
+    <div class="cats-grid">
+      <div class="cat-card" onclick="openCat('rosas')">
+        <div class="cat-bg">
+          <div class="cat-grad" style="background:linear-gradient(160deg,#f7c1c1,#e24b4a,#7a1515)"></div>
+          <div class="cat-emoji">🌹</div>
+        </div>
+        <div class="cat-info">
+          <div class="cat-name">Rosas</div>
+          <div class="cat-count">7 colores disponibles</div>
+        </div>
+        <div class="cat-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+      <div class="cat-card" onclick="openCat('tulipanes')">
+        <div class="cat-bg">
+          <div class="cat-grad" style="background:linear-gradient(160deg,#f4c0d1,#d4537e,#4b1528)"></div>
+          <div class="cat-emoji">🌷</div>
+        </div>
+        <div class="cat-info">
+          <div class="cat-name">Tulipanes</div>
+          <div class="cat-count">6 colores disponibles</div>
+        </div>
+        <div class="cat-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+      <div class="cat-card" onclick="openCat('mixtas')">
+        <div class="cat-bg">
+          <div class="cat-grad" style="background:linear-gradient(160deg,#fac775,#ba7517,#412402)"></div>
+          <div class="cat-emoji">💐</div>
+        </div>
+        <div class="cat-info">
+          <div class="cat-name">Mixtas & Especiales</div>
+          <div class="cat-count">5 modelos exclusivos</div>
+        </div>
+        <div class="cat-arrow">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /s1 -->
+
+<!-- ══ SCREEN 2: MODELOS ══ -->
+<div id="s2" class="screen">
+  <div class="page-header">
+    <div class="breadcrumb">
+      <button onclick="showScreen('s1')">Inicio</button>
+      <span>›</span>
+      <span id="bc1">Catálogo</span>
+    </div>
+    <h1 class="page-title" id="s2title">Catálogo</h1>
+    <p class="page-sub" id="s2sub">Selecciona un modelo para ver los colores</p>
+  </div>
+  <div class="models-grid" id="mgrid"></div>
+</div><!-- /s2 -->
+
+<!-- ══ SCREEN 3: COLORES ══ -->
+<div id="s3" class="screen">
+  <div class="detail-layout">
+    <div class="detail-showcase">
+      <div class="detail-bg-circle" id="dbgc"></div>
+      <div class="detail-flower" id="dflower">🌹</div>
+      <div class="detail-clabel" id="dclabel">Color</div>
+    </div>
+    <div class="detail-right">
+      <div class="breadcrumb" style="margin-bottom:1.2rem">
+        <button onclick="showScreen('s1')">Inicio</button>
+        <span>›</span>
+        <button onclick="showScreen('s2')" id="bc2">Catálogo</button>
+        <span>›</span>
+        <span id="bc3">Modelo</span>
+      </div>
+      <h2 class="detail-title" id="dtitle">Título</h2>
+      <p class="detail-desc" id="ddesc">Descripción</p>
+      <p class="colors-label">Elige tu color</p>
+      <div class="colors-grid" id="cgrid"></div>
+      <button class="btn-p" onclick="pedirWhatsApp()">Pedir por WhatsApp 📱</button>
+      <button class="btn-s" onclick="showScreen('s2')">Ver más modelos</button>
+    </div>
+  </div>
+</div><!-- /s3 -->
+
+<script>
+const D = {
+  rosas: { label: 'Rosas', models: [
+    { id:'r1', name:'Rosas Clásicas', badge:'Más vendido', desc:'El regalo eterno. 12 rosas perfectas para cualquier ocasión especial.', emoji:'🌹', bg:'linear-gradient(135deg,#fce4e4,#f7c1c1)',
+      colors:[{n:'Rojo pasión',h:'#c0392b',b:'#fde8e8'},{n:'Rosa suave',h:'#e91e8c',b:'#fce4f3'},{n:'Blanco puro',h:'#bdbdbd',b:'#f5f5f5'},{n:'Amarillo sol',h:'#f39c12',b:'#fef9e7'},{n:'Salmón coral',h:'#e67e22',b:'#fef0e7'},{n:'Morado real',h:'#8e44ad',b:'#f5eef8'},{n:'Naranja vivo',h:'#d35400',b:'#fdebd0'}]},
+    { id:'r2', name:'Rosas Premium 24', badge:null, desc:'24 rosas de tallo largo en caja elegante. Perfecto para aniversarios.', emoji:'🥀', bg:'linear-gradient(135deg,#ffe0e0,#ffb3b3)',
+      colors:[{n:'Rojo intenso',h:'#922b21',b:'#fde8e8'},{n:'Rosa chicle',h:'#d81b60',b:'#fce4ee'},{n:'Crema marfil',h:'#c8a96e',b:'#fdf6e3'},{n:'Bicolor',h:'#e74c3c',b:'#fff0f0'},{n:'Fucsia',h:'#e91e8c',b:'#fce4f2'},{n:'Coral vivo',h:'#e74c3c',b:'#fdebd0'},{n:'Negro terciopelo',h:'#2c2c2c',b:'#eee'}]},
+    { id:'r3', name:'Rosas Silvestres', badge:'Nuevo', desc:'Estilo campestre mezcladas con flores secas y baby breath.', emoji:'🌸', bg:'linear-gradient(135deg,#f9e4f0,#f4c0d1)',
+      colors:[{n:'Rosa antiguo',h:'#c9788a',b:'#fce4ea'},{n:'Blush suave',h:'#f4a7b9',b:'#fff0f3'},{n:'Terracota',h:'#a0522d',b:'#f5e6dc'},{n:'Lila polvoriento',h:'#9b59b6',b:'#f5eef8'},{n:'Melocotón',h:'#e59866',b:'#fef0e3'},{n:'Champagne',h:'#d4af7a',b:'#fdf6e8'}]},
+  ]},
+  tulipanes: { label: 'Tulipanes', models: [
+    { id:'t1', name:'Tulipanes Holandeses', badge:'Exclusivo', desc:'Importados de Holanda. Frescos y de tallo recto impecable.', emoji:'🌷', bg:'linear-gradient(135deg,#fce4ee,#f4c0d1)',
+      colors:[{n:'Rosa intenso',h:'#e91e8c',b:'#fce4f2'},{n:'Rojo carmesí',h:'#c0392b',b:'#fde8e8'},{n:'Amarillo limón',h:'#f1c40f',b:'#fefbd8'},{n:'Blanco nieve',h:'#bdbdbd',b:'#f5f5f5'},{n:'Morado oscuro',h:'#6c3483',b:'#f5eef8'},{n:'Naranja flame',h:'#e67e22',b:'#fef0e3'}]},
+    { id:'t2', name:'Tulipanes Doble Pétalo', badge:null, desc:'Variedad especial con pétalos duplicados. Un lujo floral único.', emoji:'🌺', bg:'linear-gradient(135deg,#ffe0f0,#ffb3d9)',
+      colors:[{n:'Rosa coral',h:'#e74c3c',b:'#fdebd0'},{n:'Blanco crema',h:'#c8a96e',b:'#fdf9f0'},{n:'Lila suave',h:'#a569bd',b:'#f4ecf7'},{n:'Amarillo cálido',h:'#d4ac0d',b:'#fef9e7'},{n:'Fucsia vibrante',h:'#d81b60',b:'#fce4ee'},{n:'Salmón suave',h:'#e59866',b:'#fef0e3'}]},
+    { id:'t3', name:'Mix Tulipanes 20', badge:null, desc:'20 tulipanes en tres colores combinados. Impacto visual garantizado.', emoji:'💐', bg:'linear-gradient(135deg,#e8f4f8,#b5d4f4)',
+      colors:[{n:'Mix primaveral',h:'#27ae60',b:'#eaf3de'},{n:'Mix romántico',h:'#e91e8c',b:'#fce4f2'},{n:'Mix cálido',h:'#e67e22',b:'#fef0e3'},{n:'Mix pastel',h:'#a569bd',b:'#f4ecf7'},{n:'Mix boda',h:'#bdbdbd',b:'#f5f5f5'},{n:'Mix tropical',h:'#d35400',b:'#fdebd0'}]},
+  ]},
+  mixtas: { label: 'Mixtas & Especiales', models: [
+    { id:'m1', name:'Jardín Silvestre', badge:'Favorito', desc:'Flores de temporada mezcladas. Parece recién cortado de un campo.', emoji:'🌻', bg:'linear-gradient(135deg,#fef9e7,#fac775)',
+      colors:[{n:'Tonos tierra',h:'#a0522d',b:'#f5e6dc'},{n:'Amarillo & verde',h:'#27ae60',b:'#eaf3de'},{n:'Sunset naranja',h:'#e67e22',b:'#fef0e3'},{n:'Pastel mix',h:'#f4a7b9',b:'#fce4ea'},{n:'Morado & blanco',h:'#8e44ad',b:'#f5eef8'},{n:'Borgoña & crema',h:'#922b21',b:'#fde8e8'}]},
+    { id:'m2', name:'Caja Floral Lujo', badge:'Premium', desc:'Orquídeas, rosas y limonium en caja de lujo. El regalo perfecto.', emoji:'🎁', bg:'linear-gradient(135deg,#f0e6ff,#d8b4fe)',
+      colors:[{n:'Blanco & dorado',h:'#d4af7a',b:'#fdf6e8'},{n:'Rosa & champagne',h:'#e91e8c',b:'#fce4f2'},{n:'Lila & verde',h:'#8e44ad',b:'#f5eef8'},{n:'Rojo & negro',h:'#922b21',b:'#fde8e8'},{n:'Azul & blanco',h:'#185fa5',b:'#e6f1fb'}]},
+    { id:'m3', name:'Girasoles & Rosas', badge:null, desc:'La combinación más alegre. Girasoles frescos con rosas de temporada.', emoji:'🌻', bg:'linear-gradient(135deg,#fffde7,#fac775)',
+      colors:[{n:'Clásico amarillo',h:'#f39c12',b:'#fef9e7'},{n:'Con rosas rojas',h:'#c0392b',b:'#fde8e8'},{n:'Con rosas rosas',h:'#e91e8c',b:'#fce4f2'},{n:'Tonos naranja',h:'#e67e22',b:'#fef0e3'},{n:'Mezcla otoño',h:'#a0522d',b:'#f5e6dc'},{n:'Vintage crema',h:'#c8a96e',b:'#fdf6e8'}]},
+    { id:'m4', name:'Orquídeas Elegance', badge:'Exclusivo', desc:'Phalaenopsis en maceta decorativa. Dura semanas con mínimo cuidado.', emoji:'🌸', bg:'linear-gradient(135deg,#f5eef8,#d7bde2)',
+      colors:[{n:'Blanco puro',h:'#bdbdbd',b:'#f5f5f5'},{n:'Rosa intenso',h:'#d81b60',b:'#fce4ee'},{n:'Morado real',h:'#6c3483',b:'#f5eef8'},{n:'Bicolor blanco-lila',h:'#a569bd',b:'#f4ecf7'},{n:'Amarillo exótico',h:'#d4ac0d',b:'#fef9e7'},{n:'Fuchsia tropical',h:'#e91e8c',b:'#fce4f2'}]},
+    { id:'m5', name:'Bouquet Novia', badge:'Especial', desc:'Diseño exclusivo para bodas. Coordinamos con tus colores.', emoji:'👰', bg:'linear-gradient(135deg,#fff9f0,#f5e6dc)',
+      colors:[{n:'Blanco total',h:'#bdbdbd',b:'#fafafa'},{n:'Ivory & verde',h:'#c8a96e',b:'#fdf6e8'},{n:'Rosa & blanco',h:'#e91e8c',b:'#fce4f2'},{n:'Terracota & crema',h:'#a0522d',b:'#f5e6dc'},{n:'Azul celeste & blanco',h:'#185fa5',b:'#e6f1fb'},{n:'A medida',h:'#888780',b:'#f5f5f2'}]},
+  ]}
+};
+
+let curCat = 'rosas';
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleMenu() {
+  document.getElementById('mmenu').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('mmenu').classList.remove('open');
+}
+
+function openCat(cat) {
+  curCat = cat;
+  const c = D[cat];
+  document.getElementById('bc1').textContent = c.label;
+  document.getElementById('s2title').textContent = c.label;
+  document.getElementById('s2sub').textContent = c.models.length + ' modelos · selecciona para ver colores';
+  renderModels(c.models);
+  showScreen('s2');
+}
+
+function initCatalog() {
+  curCat = 'rosas';
+  const all = [];
+  Object.values(D).forEach(c => c.models.forEach(m => all.push(m)));
+  document.getElementById('bc1').textContent = 'Catálogo';
+  document.getElementById('s2title').textContent = 'Catálogo completo';
+  document.getElementById('s2sub').textContent = all.length + ' modelos · selecciona para ver colores';
+  renderModels(all);
+}
+
+function renderModels(models) {
+  document.getElementById('mgrid').innerHTML = models.map(m => `
+    <div class="model-card" onclick="openModel('${m.id}')">
+      ${m.badge ? `<div class="model-badge">${m.badge}</div>` : ''}
+      <div class="model-thumb">
+        <div class="model-thumb-bg" style="background:${m.bg}"></div>
+        <div class="model-emoji">${m.emoji}</div>
+      </div>
+      <div class="model-body">
+        <div class="model-name">${m.name}</div>
+        <div class="model-desc">${m.desc}</div>
+        <div class="dots-row">
+          ${m.colors.slice(0,4).map(c => `<div class="cdot" style="background:${c.h}"></div>`).join('')}
+          ${m.colors.length > 4 ? `<div class="cmore">+${m.colors.length - 4}</div>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openModel(id) {
+  let model, cat;
+  Object.entries(D).forEach(([k, c]) => {
+    const m = c.models.find(x => x.id === id);
+    if (m) { model = m; cat = c; }
+  });
+  if (!model) return;
+  document.getElementById('bc2').textContent = cat.label;
+  document.getElementById('bc3').textContent = model.name;
+  document.getElementById('dtitle').textContent = model.name;
+  document.getElementById('ddesc').textContent = model.desc;
+  document.getElementById('dflower').textContent = model.emoji;
+  if (model.colors.length) {
+    document.getElementById('dbgc').style.background = model.colors[0].h;
+    document.getElementById('dclabel').textContent = model.colors[0].n;
+  }
+  document.getElementById('cgrid').innerHTML = model.colors.map((c, i) => `
+    <div class="color-card${i === 0 ? ' selected' : ''}" onclick="pickColor(this,'${c.h}','${c.n}')">
+      <div class="color-swatch" style="background:${c.b}">${model.emoji}</div>
+      <div class="color-info">
+        <div class="color-name">${c.n}</div>
+        <div class="color-hex">${c.h}</div>
+      </div>
+    </div>`).join('');
+  showScreen('s3');
+}
+
+function pedirWhatsApp() {
+  const modelo = document.getElementById('dtitle').textContent;
+  const color  = document.getElementById('dclabel').textContent;
+  const msg    = `Hola! 🌸 Me interesa el modelo *${modelo}* en color *${color}*. ¿Tienen disponibilidad?`;
+  window.open('https://wa.me/51912449977?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function pickColor(el, hex, name) {
+  document.querySelectorAll('.color-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('dbgc').style.background = hex;
+  document.getElementById('dclabel').textContent = name;
+}
+</script>
+</body>
+</html>
